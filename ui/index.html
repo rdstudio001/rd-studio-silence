@@ -216,12 +216,12 @@
               <div class="control-row">
                 <div class="label-info">
                   <label for="input-threshold" class="control-label">Silence Threshold (dB)</label>
-                  <span class="info-tooltip" title="Audio level below this threshold is classified as silence. Lower values (-30dB, -40dB) are less aggressive. Default: -20.00 dB.">?</span>
+                  <span class="info-tooltip" title="Audio level below this threshold is classified as silence. Lower values (-30dB, -40dB) are word-safe and protect speech. Default: -30.00 dB.">?</span>
                 </div>
                 <div class="slider-input-pair">
-                  <input type="range" id="slider-threshold" min="-80" max="0" step="0.5" value="-20">
+                  <input type="range" id="slider-threshold" min="-80" max="0" step="0.5" value="-30">
                   <div class="numeric-input-wrapper">
-                    <input type="number" id="input-threshold" min="-80" max="0" step="0.5" value="-20.00" class="numeric-input mono">
+                    <input type="number" id="input-threshold" min="-80" max="0" step="0.5" value="-30.00" class="numeric-input mono">
                     <span class="input-unit">dB</span>
                   </div>
                 </div>
@@ -231,16 +231,16 @@
               <div class="control-row">
                 <div class="label-info">
                   <label for="input-min-duration" class="control-label">Minimum Silence Duration (sec)</label>
-                  <span class="info-tooltip" title="Only pauses at least this long will be truncated. Shorter micro-pauses within words remain untouched. Default: 0.07 sec.">?</span>
+                  <span class="info-tooltip" title="Only pauses at least this long will be truncated. 0.20s protects pauses between syllables. Default: 0.20 sec.">?</span>
                 </div>
                 <div class="input-with-stepper">
-                  <input type="number" id="input-min-duration" min="0.01" max="10.0" step="0.01" value="0.07" class="numeric-input mono">
+                  <input type="number" id="input-min-duration" min="0.01" max="10.0" step="0.01" value="0.20" class="numeric-input mono">
                   <span class="input-unit">sec</span>
                   <div class="quick-chips">
-                    <button class="chip" data-target="input-min-duration" data-val="0.05">0.05s</button>
-                    <button class="chip active" data-target="input-min-duration" data-val="0.07">0.07s</button>
                     <button class="chip" data-target="input-min-duration" data-val="0.10">0.10s</button>
-                    <button class="chip" data-target="input-min-duration" data-val="0.20">0.20s</button>
+                    <button class="chip" data-target="input-min-duration" data-val="0.15">0.15s</button>
+                    <button class="chip active" data-target="input-min-duration" data-val="0.20">0.20s</button>
+                    <button class="chip" data-target="input-min-duration" data-val="0.30">0.30s</button>
                   </div>
                 </div>
               </div>

@@ -32,6 +32,9 @@ from engine.batch import BatchManager
 
 app = Bottle()
 
+# Allow large file uploads up to 1 GB without 413 or memory errors
+bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024 * 1024
+
 # Global managers
 settings_mgr = SettingsManager()
 preset_mgr = PresetManager()

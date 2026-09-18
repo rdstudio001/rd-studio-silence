@@ -14,9 +14,9 @@ FACTORY_PRESETS: List[Dict[str, Any]] = [
     {
         "id": "rd_studio_dialogue_cut",
         "name": "RD Studio — Dialogue Silence Cut",
-        "description": "Optimized starting point for professional Urdu, Hindi & Asian drama/anime dubbing.",
-        "threshold_db": -20.0,
-        "min_silence_sec": 0.07,
+        "description": "Optimized starting point with word-shield protection. Cuts silence between sentences without clipping words.",
+        "threshold_db": -30.0,
+        "min_silence_sec": 0.20,
         "max_silence_sec": None,
         "action": "truncate",
         "remaining_silence_sec": 0.20,

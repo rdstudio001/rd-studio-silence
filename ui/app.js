@@ -770,20 +770,9 @@ function handleProcessingComplete(result) {
     el.btnDownloadAudio.onclick = () => {
       window.location.href = downloadUrl;
     };
-  }
-
-  // Automatic Trigger Download to Mobile / PC Downloads Folder
-  try {
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = result.output_filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-    }, 200);
-  } catch (e) {
-    console.warn('Auto download blocked, user can tap the green button.');
+    try {
+      el.btnDownloadAudio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) {}
   }
 
   alert(
@@ -792,8 +781,7 @@ function handleProcessingComplete(result) {
     `Original Duration: ${result.original_duration_formatted}\n` +
     `New Duration: ${result.output_duration_formatted}\n` +
     `Silence Truncated: ${result.silence_removed_formatted}\n\n` +
-    `The cleaned audio file is now DOWNLOADING to your device (Downloads folder)!\n` +
-    `You can also tap the green "DOWNLOAD AUDIO" button anytime.`
+    `Audio ready! Niche diye gaye green "DOWNLOAD AUDIO TO MOBILE / PC" button par click kar ke file save karein.`
   );
 }
 
