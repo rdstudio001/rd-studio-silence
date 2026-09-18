@@ -1,0 +1,4 @@
+bottle>=0.13.0
+numpy>=1.26.0
+psutil>=5.9.0
+static-ffmpeg>=2.5

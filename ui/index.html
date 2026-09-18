@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RD Studio — Auto Silence Remover</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e50914">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app" class="app-layout">
+    <!-- Studio Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-badge">
+          <span class="brand-dot"></span>
+          <span class="brand-name">RD STUDIO</span>
+        </div>
+        <div class="brand-titles">
+          <h1 class="app-title">AUTO SILENCE REMOVER</h1>
+          <span class="app-subtitle">Professional Dialogue Silence Processing</span>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <button id="btn-batch-toggle" class="nav-btn" title="Batch Processing Queue">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+          <span>Batch Queue</span>
+          <span id="batch-counter" class="badge-count hidden">0</span>
+        </button>
+
+        <button id="btn-presets-modal" class="nav-btn" title="Manage Presets">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <span>Presets</span>
+        </button>
+
+        <button id="btn-history-modal" class="nav-btn" title="Processing History">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+          <span>History</span>
+        </button>
+
+        <button id="btn-settings-modal" class="nav-btn" title="Settings">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>Settings</span>
+        </button>
+
+        <button id="btn-about-modal" class="nav-btn" title="About RD Studio">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <span>About</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-workspace">
+      <!-- File Import Zone (Shows when no media loaded) -->
+      <section id="drop-zone" class="drop-zone-card">
+        <div class="drop-content">
+          <div class="drop-icon-wrapper">
+            <svg class="drop-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+          </div>
+          <h2 class="drop-title">Drop Audio or Video Here</h2>
+          <p class="drop-desc">Supports multi-hour long dubbing recordings, drama sessions, podcasts & video stems.</p>
+
+          <div class="drop-actions">
+            <button id="btn-browse" class="btn-primary">
+              <svg class="btn-icon" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+              Browse Files
+            </button>
+            <input type="file" id="file-input-fallback" class="hidden-input" accept=".wav,.mp3,.m4a,.aac,.flac,.ogg,.opus,.aiff,.mp4,.mkv,.mov,.webm,.avi">
+          </div>
+
+          <div class="supported-badges">
+            <span class="badge">WAV</span>
+            <span class="badge">MP3</span>
+            <span class="badge">M4A</span>
+            <span class="badge">AAC</span>
+            <span class="badge">FLAC</span>
+            <span class="badge">OGG</span>
+            <span class="badge">OPUS</span>
+            <span class="badge">AIFF</span>
+            <span class="badge-separator">|</span>
+            <span class="badge badge-video">MP4</span>
+            <span class="badge badge-video">MKV</span>
+            <span class="badge badge-video">MOV</span>
+            <span class="badge badge-video">WebM</span>
+          </div>
+          <p class="drop-note">* Video files: audio track is automatically extracted and processed. Output is always pristine studio audio.</p>
+        </div>
+      </section>
+
+      <!-- Active File Loaded View (Hidden initially) -->
+      <div id="media-view" class="media-view-container hidden">
+        <!-- Media Information Bar -->
+        <div class="media-info-card card">
+          <div class="media-title-group">
+            <div class="media-type-tag" id="meta-type">AUDIO</div>
+            <div class="media-name-container">
+              <h3 id="meta-filename" class="media-filename" title="Filename">episode_audio.wav</h3>
+              <span id="meta-path" class="media-filepath">C:\...</span>
+            </div>
+          </div>
+
+          <div class="meta-stats-grid">
+            <div class="meta-item">
+              <span class="meta-label">Duration</span>
+              <span id="meta-duration" class="meta-val mono">00:00:00</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">File Size</span>
+              <span id="meta-size" class="meta-val">0 MB</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Sample Rate</span>
+              <span id="meta-samplerate" class="meta-val">44.1 kHz</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Channels</span>
+              <span id="meta-channels" class="meta-val">Stereo</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Codec / Depth</span>
+              <span id="meta-codec" class="meta-val">PCM 24-bit</span>
+            </div>
+          </div>
+
+          <div class="meta-actions">
+            <button id="btn-add-batch" class="btn-ghost" title="Add to Batch Queue">
+              + Queue File
+            </button>
+            <button id="btn-clear-media" class="btn-icon-danger" title="Close File">
+              <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Waveform Visualization Display -->
+        <div class="waveform-card card">
+          <div class="waveform-toolbar">
+            <div class="waveform-legend">
+              <span class="legend-item"><span class="legend-box speech-box"></span> Dialogue Audio</span>
+              <span class="legend-item"><span class="legend-box silence-box"></span> Detected Silence Region</span>
+            </div>
+
+            <div class="waveform-time-display">
+              <span class="time-label">Playhead:</span>
+              <span id="wave-current-time" class="time-val mono">00:00:00.0</span>
+              <span class="time-sep">/</span>
+              <span id="wave-total-time" class="time-val mono">00:00:00.0</span>
+            </div>
+
+            <div class="waveform-zoom-controls">
+              <button id="btn-zoom-out" class="btn-zoom" title="Zoom Out">-</button>
+              <span id="zoom-level" class="zoom-text">1x</span>
+              <button id="btn-zoom-in" class="btn-zoom" title="Zoom In">+</button>
+              <button id="btn-zoom-reset" class="btn-zoom-reset" title="Fit to Width">Fit</button>
+            </div>
+          </div>
+
+          <!-- Interactive Waveform Canvas Container -->
+          <div class="canvas-viewport" id="canvas-viewport">
+            <canvas id="waveform-canvas"></canvas>
+            <div id="playhead-line" class="playhead"></div>
+          </div>
+        </div>
+
+        <!-- Analysis & Statistics Banner -->
+        <div id="analysis-banner" class="analysis-results-card card hidden">
+          <div class="stat-box">
+            <span class="stat-number mono" id="stat-regions">0</span>
+            <span class="stat-label">Detected Silent Sections</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-number mono text-red" id="stat-total-silence">00:00</span>
+            <span class="stat-label">Total Detected Silence</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-number mono text-accent" id="stat-reduction">00:00</span>
+            <span class="stat-label">Estimated Reduction</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-box">
+            <span class="stat-number mono text-green" id="stat-estimated-out">00:00</span>
+            <span class="stat-label">Estimated Output Duration</span>
+          </div>
+        </div>
+
+        <!-- Dialogue Silence Controls Panel & Presets -->
+        <div class="controls-grid">
+          <!-- Silence Detection Controls -->
+          <div class="card controls-card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h4 class="card-title">SILENCE DETECTION CONTROLS</h4>
+                <span class="card-subtitle">Energy & Duration Thresholds</span>
+              </div>
+
+              <!-- Preset Selector -->
+              <div class="preset-selector-group">
+                <label for="preset-select" class="preset-label">Active Preset:</label>
+                <select id="preset-select" class="studio-select">
+                  <!-- Populated dynamically -->
+                </select>
+                <button id="btn-save-preset-prompt" class="btn-subtle" title="Save current settings as preset">Save as...</button>
+              </div>
+            </div>
+
+            <div class="settings-form">
+              <!-- Threshold Control -->
+              <div class="control-row">
+                <div class="label-info">
+                  <label for="input-threshold" class="control-label">Silence Threshold (dB)</label>
+                  <span class="info-tooltip" title="Audio level below this threshold is classified as silence. Lower values (-30dB, -40dB) are less aggressive. Default: -20.00 dB.">?</span>
+                </div>
+                <div class="slider-input-pair">
+                  <input type="range" id="slider-threshold" min="-80" max="0" step="0.5" value="-20">
+                  <div class="numeric-input-wrapper">
+                    <input type="number" id="input-threshold" min="-80" max="0" step="0.5" value="-20.00" class="numeric-input mono">
+                    <span class="input-unit">dB</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Minimum Silence Duration -->
+              <div class="control-row">
+                <div class="label-info">
+                  <label for="input-min-duration" class="control-label">Minimum Silence Duration (sec)</label>
+                  <span class="info-tooltip" title="Only pauses at least this long will be truncated. Shorter micro-pauses within words remain untouched. Default: 0.07 sec.">?</span>
+                </div>
+                <div class="input-with-stepper">
+                  <input type="number" id="input-min-duration" min="0.01" max="10.0" step="0.01" value="0.07" class="numeric-input mono">
+                  <span class="input-unit">sec</span>
+                  <div class="quick-chips">
+                    <button class="chip" data-target="input-min-duration" data-val="0.05">0.05s</button>
+                    <button class="chip active" data-target="input-min-duration" data-val="0.07">0.07s</button>
+                    <button class="chip" data-target="input-min-duration" data-val="0.10">0.10s</button>
+                    <button class="chip" data-target="input-min-duration" data-val="0.20">0.20s</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Silence Action -->
+              <div class="control-row">
+                <div class="label-info">
+                  <label for="select-action" class="control-label">Silence Action</label>
+                  <span class="info-tooltip" title="Truncate/Compress: Audacity-style truncation preserving natural breathing. Remove Completely: 100% stripped. Keep Natural: Cuts silence exceeding threshold.">?</span>
+                </div>
+                <select id="select-action" class="studio-select action-select">
+                  <option value="truncate" selected>Truncate / Compress Silence (Audacity Style)</option>
+                  <option value="remove">Remove Silence Completely</option>
+                  <option value="natural">Keep Natural Silence</option>
+                </select>
+              </div>
+
+              <!-- Remaining Silence Duration -->
+              <div class="control-row" id="row-remaining-silence">
+                <div class="label-info">
+                  <label for="input-remaining-silence" class="control-label">Remaining Silence (sec)</label>
+                  <span class="info-tooltip" title="Amount of natural pause retained between dialogue lines after truncation. Preserves conversational pacing. Default: 0.20 sec.">?</span>
+                </div>
+                <div class="input-with-stepper">
+                  <input type="number" id="input-remaining-silence" min="0.0" max="5.0" step="0.05" value="0.20" class="numeric-input mono">
+                  <span class="input-unit">sec</span>
+                  <div class="quick-chips">
+                    <button class="chip" data-target="input-remaining-silence" data-val="0.10">0.10s</button>
+                    <button class="chip" data-target="input-remaining-silence" data-val="0.15">0.15s</button>
+                    <button class="chip active" data-target="input-remaining-silence" data-val="0.20">0.20s</button>
+                    <button class="chip" data-target="input-remaining-silence" data-val="0.30">0.30s</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maximum Silence Duration (Optional) -->
+              <div class="control-row">
+                <div class="label-info">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="check-max-silence">
+                    <span>Enable Maximum Silence Limit</span>
+                  </label>
+                  <span class="info-tooltip" title="Optionally leave very long dramatic silences (e.g. > 10s) untouched.">?</span>
+                </div>
+                <div class="input-with-stepper" id="max-silence-input-container" style="opacity: 0.4; pointer-events: none;">
+                  <input type="number" id="input-max-silence" min="0.5" max="60.0" step="0.5" value="5.0" class="numeric-input mono">
+                  <span class="input-unit">sec</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Center & Studio Export Configuration -->
+          <div class="card export-card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h4 class="card-title">PROCESS & EXPORT</h4>
+                <span class="card-subtitle">Studio Quality Preservation (Audio Only)</span>
+              </div>
+            </div>
+
+            <!-- Primary Processing Execution Buttons -->
+            <div class="primary-execution-section">
+              <button id="btn-analyze" class="btn-secondary" title="Analyze silence without processing">
+                <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                ANALYZE SILENCE
+              </button>
+
+              <button id="btn-process" class="btn-master-action">
+                <svg class="btn-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                REMOVE / TRUNCATE SILENCE
+              </button>
+            </div>
+
+            <!-- Studio Export Settings -->
+            <div class="export-settings-panel">
+              <div class="export-options-grid">
+                <div class="form-group">
+                  <label for="export-format" class="export-label">Output Format</label>
+                  <select id="export-format" class="studio-select">
+                    <option value="wav" selected>WAV (Uncompressed PCM)</option>
+                    <option value="mp3">MP3 (MPEG Layer 3)</option>
+                    <option value="flac">FLAC (Lossless Studio)</option>
+                    <option value="m4a">AAC / M4A (MPEG-4 Audio)</option>
+                    <option value="ogg">OGG / OPUS (Voice Optimized)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="export-quality" class="export-label">Quality Profile</label>
+                  <select id="export-quality" class="studio-select">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="export-samplerate" class="export-label">Sample Rate</label>
+                  <select id="export-samplerate" class="studio-select">
+                    <option value="original" selected>Original (Preserve Source)</option>
+                    <option value="44100">44,100 Hz (Standard Audio)</option>
+                    <option value="48000">48,000 Hz (Dubbing / Video Standard)</option>
+                    <option value="96000">96,000 Hz (Hi-Res Studio Master)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="export-channels" class="export-label">Channels</label>
+                  <select id="export-channels" class="studio-select">
+                    <option value="original" selected>Original (Preserve Source)</option>
+                    <option value="1">Mono (Voice Track)</option>
+                    <option value="2">Stereo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="target-folder-row">
+                <span class="folder-label">Destination Folder:</span>
+                <span id="export-target-display" class="folder-path" title="Export Directory">Music\RD_Studio_Exports</span>
+                <button id="btn-change-folder" class="btn-subtle">Change...</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Before / After Dual Audio Preview Players -->
+        <div class="card preview-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h4 class="card-title">STUDIO AUDIO PREVIEW</h4>
+              <span class="card-subtitle">Compare Original Dialogue with Processed Result</span>
+            </div>
+          </div>
+
+          <div class="dual-players-grid">
+            <!-- Original Audio Player -->
+            <div class="player-unit">
+              <div class="player-header">
+                <span class="player-tag tag-orig">ORIGINAL AUDIO</span>
+                <span id="orig-timer" class="player-timer mono">00:00 / 00:00</span>
+              </div>
+              <div class="player-controls">
+                <button id="btn-orig-play" class="btn-play-toggle">
+                  <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+                <button id="btn-orig-stop" class="btn-player-sub">
+                  <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                </button>
+                <input type="range" id="orig-seek" class="player-seekbar" min="0" max="100" value="0" step="0.1">
+                <div class="speed-group">
+                  <select id="orig-speed" class="speed-select">
+                    <option value="0.75">0.75x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                  </select>
+                </div>
+                <div class="vol-control">
+                  <svg class="vol-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                  <input type="range" id="orig-vol" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                </div>
+              </div>
+            </div>
+
+            <!-- Processed Audio Player -->
+            <div class="player-unit">
+              <div class="player-header">
+                <span class="player-tag tag-proc">PROCESSED AUDIO</span>
+                <span id="proc-timer" class="player-timer mono">--:-- / --:--</span>
+              </div>
+              <div class="player-controls" id="proc-controls" style="opacity: 0.4; pointer-events: none;">
+                <button id="btn-proc-play" class="btn-play-toggle">
+                  <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+                <button id="btn-proc-stop" class="btn-player-sub">
+                  <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                </button>
+                <input type="range" id="proc-seek" class="player-seekbar" min="0" max="100" value="0" step="0.1">
+                <div class="speed-group">
+                  <select id="proc-speed" class="speed-select">
+                    <option value="0.75">0.75x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                  </select>
+                </div>
+                <div class="vol-control">
+                  <svg class="vol-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                  <input type="range" id="proc-vol" class="vol-slider" min="0" max="1" step="0.05" value="1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Studio Footer Bar -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span class="status-indicator-dot"></span>
+        <span id="global-status-text" class="status-msg">Ready</span>
+      </div>
+      <div class="footer-center">
+        <span>RD STUDIO AUTO SILENCE REMOVER — HIGH PRECISION DUBBING ENGINE</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://rdstudio.online" target="_blank" class="footer-link">rdstudio.online</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Processing Progress Modal Overlay -->
+  <div id="progress-modal" class="modal-backdrop hidden">
+    <div class="modal-card progress-dialog">
+      <div class="progress-header">
+        <div class="brand-badge mini"><span class="brand-dot"></span> RD STUDIO</div>
+        <h3 class="progress-title" id="prog-title">Processing Audio</h3>
+      </div>
+
+      <div class="prog-file-info">
+        <span class="prog-file-label">Current File:</span>
+        <span id="prog-filename" class="prog-filename-val">episode_01.wav</span>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-track">
+          <div id="prog-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-percentage-display">
+          <span id="prog-pct" class="mono">0%</span>
+        </div>
+      </div>
+
+      <div class="progress-stage-display">
+        <div class="spinner mini"></div>
+        <span id="prog-stage">Initializing media engine...</span>
+      </div>
+
+      <div class="progress-metrics-grid">
+        <div class="metric-item">
+          <span class="m-label">Elapsed Time</span>
+          <span id="prog-elapsed" class="m-val mono">00:00</span>
+        </div>
+        <div class="metric-item">
+          <span class="m-label">Est. Remaining</span>
+          <span id="prog-remaining" class="m-val mono">Calculating...</span>
+        </div>
+        <div class="metric-item">
+          <span class="m-label">Processed Audio</span>
+          <span id="prog-processed-time" class="m-val mono">00:00:00</span>
+        </div>
+      </div>
+
+      <div class="progress-actions">
+        <button id="btn-cancel-process" class="btn-danger-outline">CANCEL PROCESSING</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Batch Processing Drawer/Modal -->
+  <div id="batch-modal" class="modal-backdrop hidden">
+    <div class="modal-card batch-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Batch Processing Queue</h3>
+        <button class="btn-close-modal" data-close="batch-modal">&times;</button>
+      </div>
+
+      <div class="batch-body">
+        <div class="batch-actions-bar">
+          <button id="btn-batch-add-files" class="btn-primary mini">+ Add Media Files</button>
+          <button id="btn-batch-clear" class="btn-ghost mini">Clear Queue</button>
+          <div class="spacer"></div>
+          <button id="btn-batch-process-all" class="btn-master-action mini">PROCESS ALL FILES</button>
+        </div>
+
+        <div class="batch-table-container">
+          <table class="batch-table">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Stage / Progress</th>
+                <th>Output File</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="batch-table-body">
+              <tr>
+                <td colspan="7" class="empty-table-msg">No files in batch queue. Drag multiple files or click "+ Add Media Files".</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Presets Manager Modal -->
+  <div id="presets-modal" class="modal-backdrop hidden">
+    <div class="modal-card presets-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Manage Dialogue Presets</h3>
+        <button class="btn-close-modal" data-close="presets-modal">&times;</button>
+      </div>
+      <div class="presets-body">
+        <div class="presets-list" id="presets-manager-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Preset Modal -->
+  <div id="save-preset-modal" class="modal-backdrop hidden">
+    <div class="modal-card prompt-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Save Custom Preset</h3>
+        <button class="btn-close-modal" data-close="save-preset-modal">&times;</button>
+      </div>
+      <div class="modal-form">
+        <label for="custom-preset-name">Preset Name:</label>
+        <input type="text" id="custom-preset-name" class="studio-text-input" placeholder="e.g. My Anime Voice Cut">
+        <div class="modal-actions">
+          <button class="btn-ghost" data-close="save-preset-modal">Cancel</button>
+          <button id="btn-confirm-save-preset" class="btn-primary">Save Preset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="history-modal" class="modal-backdrop hidden">
+    <div class="modal-card history-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Processing History Log</h3>
+        <button class="btn-close-modal" data-close="history-modal">&times;</button>
+      </div>
+      <div class="history-body">
+        <div class="history-actions">
+          <button id="btn-clear-history" class="btn-ghost mini">Clear History</button>
+        </div>
+        <div class="history-table-container">
+          <table class="batch-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Filename</th>
+                <th>Preset</th>
+                <th>Original</th>
+                <th>Processed</th>
+                <th>Silence Cut</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr><td colspan="7" class="empty-table-msg">No history records yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-card settings-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">RD Studio Preferences</h3>
+        <button class="btn-close-modal" data-close="settings-modal">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="setting-item">
+          <label class="setting-label">Default Export Directory</label>
+          <div class="setting-path-group">
+            <input type="text" id="setting-export-dir" class="studio-text-input" readonly>
+            <button id="btn-browse-setting-export" class="btn-subtle">Browse...</button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label class="setting-label">Temporary Working Directory</label>
+          <div class="setting-path-group">
+            <input type="text" id="setting-temp-dir" class="studio-text-input" readonly>
+          </div>
+          <span class="setting-hint">Used for safe temporary concatenation streams during long file rendering.</span>
+        </div>
+
+        <div class="setting-item checkbox-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="setting-auto-clean" checked>
+            <span>Automatically clean temporary files after processing</span>
+          </label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="setting-confirm-overwrite" checked>
+            <span>Prompt before replacing existing output files</span>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary" id="btn-save-settings">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div id="about-modal" class="modal-backdrop hidden">
+    <div class="modal-card about-dialog">
+      <div class="modal-header">
+        <div class="brand-badge"><span class="brand-dot"></span> RD STUDIO</div>
+        <button class="btn-close-modal" data-close="about-modal">&times;</button>
+      </div>
+
+      <div class="about-content">
+        <h2 class="about-title">AUTO SILENCE REMOVER</h2>
+        <span class="about-version">Version 1.0.0 Production Release</span>
+        
+        <div class="about-info-box">
+          <p><strong>Owner:</strong> Shahneel Khan</p>
+          <p><strong>Studio:</strong> RD Studio</p>
+          <p><strong>Focus:</strong> Professional Urdu & Hindi Dubbing Studio, Voice-over & Dialogue Processing</p>
+          <p><strong>Official Website:</strong> <a href="https://rdstudio.online" target="_blank" class="about-link">https://rdstudio.online</a></p>
+        </div>
+
+        <div class="about-engine-specs">
+          <h4>Architecture & Capabilities</h4>
+          <ul>
+            <li>High-Performance Local FFmpeg Media Engine (Zero cloud uploads)</li>
+            <li>Memory-Safe Stream Architecture for 2–3 Hour Dubbing Sessions</li>
+            <li>Audacity-Style Truncation preserving Natural Dialogue Timing</li>
+            <li>Dual Waveform Visualization with Sub-sample Peak Generation</li>
+            <li>Multi-Channel & Hi-Res PCM/Lossless Audio Exporting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

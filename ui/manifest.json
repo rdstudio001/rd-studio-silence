@@ -1,0 +1,22 @@
+{
+  "name": "RD Studio Auto Silence Remover",
+  "short_name": "RD Silence Cut",
+  "description": "Professional Dialogue Silence Remover for Dubbing and Voice-overs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0d12",
+  "theme_color": "#e50914",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
