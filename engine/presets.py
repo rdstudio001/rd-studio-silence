@@ -45,6 +45,17 @@ FACTORY_PRESETS: List[Dict[str, Any]] = [
         "is_builtin": True
     },
     {
+        "id": "word_safe_dubbing",
+        "name": "RD Studio — Word-Safe Dubbing (Recommended)",
+        "description": "Safely cuts only sentence pauses without cutting words or plosive consonants. Perfect for phone and dubbing mic recordings.",
+        "threshold_db": -30.0,
+        "min_silence_sec": 0.20,
+        "max_silence_sec": None,
+        "action": "truncate",
+        "remaining_silence_sec": 0.20,
+        "is_builtin": True
+    },
+    {
         "id": "aggressive_silence_cut",
         "name": "Aggressive Silence Cut",
         "description": "Rapid pacing with minimal gaps, ideal for fast promos, game dubs, and trailers.",

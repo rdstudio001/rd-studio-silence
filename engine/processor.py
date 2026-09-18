@@ -23,19 +23,12 @@ def build_keep_segments(
     silence_regions: List[Dict[str, float]],
     action: str = "truncate",
     remaining_silence_sec: float = 0.20,
-    max_silence_sec: Optional[float] = None
+    max_silence_sec: Optional[float] = None,
+    padding_sec: float = 0.06
 ) -> List[Tuple[float, float]]:
     """
     Computes precise timeline keep intervals based on detected silence regions and configured action.
-    Preserves dialogue natural timing.
-
-    For 'truncate':
-      Cuts out excess silence above remaining_silence_sec, evenly splitting
-      remaining silence across preceding and succeeding speech for a natural pause.
-    For 'remove':
-      Removes detected silence completely.
-    For 'natural':
-      Preserves all natural pauses up to remaining_silence_sec, truncating longer ones.
+    Preserves dialogue natural timing with dialogue safety padding so words are never cut in half.
     """
     if not silence_regions:
         return [(0.0, total_duration)] if total_duration > 0 else []
@@ -58,11 +51,11 @@ def build_keep_segments(
 
         if action == "truncate" or action == "natural":
             if dur > remaining_silence_sec:
-                # Keep half remaining silence at the end of speech, half at the beginning of next speech
-                half_keep = remaining_silence_sec / 2.0
+                # Keep remaining silence evenly distributed, plus safety padding to protect word ends/attacks
+                half_keep = max(padding_sec, remaining_silence_sec / 2.0)
                 cut_start = s + half_keep
                 cut_end = e - half_keep
-                if cut_end > cut_start:
+                if cut_end > cut_start + 0.02:  # Ensure minimum cut is at least 20ms
                     cut_intervals.append((cut_start, cut_end))
         elif action == "remove":
             cut_intervals.append((s, e))
