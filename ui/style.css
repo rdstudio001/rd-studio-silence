@@ -1443,3 +1443,27 @@ body {
   color: var(--text-muted);
   line-height: 1.7;
 }
+
+.btn-download-processed {
+  background: #00e676;
+  color: #0c0d12;
+  border: 1px solid #00ff84;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 230, 118, 0.25);
+}
+
+.btn-download-processed:hover {
+  background: #00ff84;
+  box-shadow: 0 6px 18px rgba(0, 230, 118, 0.45);
+  transform: translateY(-1px);
+}
+

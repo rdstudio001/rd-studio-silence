@@ -549,6 +549,18 @@ def stream_audio():
     return file_chunk_generator(filepath, start, content_length)
 
 
+@app.route('/api/download')
+def download_audio_file():
+    """Forces browser or mobile phone to download the processed audio file directly."""
+    filepath = request.query.get('file')
+    if not filepath or not os.path.exists(filepath):
+        abort(404, "Audio file not found.")
+
+    filename = os.path.basename(filepath)
+    dirname = os.path.dirname(os.path.abspath(filepath))
+    return static_file(filename, root=dirname, download=filename)
+
+
 def run_server(host="127.0.0.1", port=8080):
     """Starts the bottle web server."""
     bottle.run(app, host=host, port=port, quiet=True)

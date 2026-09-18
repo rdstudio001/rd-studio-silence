@@ -98,6 +98,7 @@ const el = {
   procSeek: document.getElementById('proc-seek'),
   procSpeed: document.getElementById('proc-speed'),
   procVol: document.getElementById('proc-vol'),
+  btnDownloadAudio: document.getElementById('btn-download-audio'),
 
   // Progress Modal
   progressModal: document.getElementById('progress-modal'),
@@ -805,14 +806,37 @@ function handleProcessingComplete(result) {
   el.procTimer.textContent = `00:00 / ${result.output_duration_formatted.slice(0, 5)}`;
   el.procSeek.value = 0;
 
+  // Setup Download Button
+  const downloadUrl = `/api/download?file=${encodeURIComponent(result.output_path)}`;
+  if (el.btnDownloadAudio) {
+    el.btnDownloadAudio.style.display = 'flex';
+    el.btnDownloadAudio.onclick = () => {
+      window.location.href = downloadUrl;
+    };
+  }
+
+  // Automatic Trigger Download to Mobile / PC Downloads Folder
+  try {
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = result.output_filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+    }, 200);
+  } catch (e) {
+    console.warn('Auto download blocked, user can tap the green button.');
+  }
+
   alert(
     `RD STUDIO — PROCESSING COMPLETE!\n\n` +
     `Output File: ${result.output_filename}\n` +
     `Original Duration: ${result.original_duration_formatted}\n` +
     `New Duration: ${result.output_duration_formatted}\n` +
-    `Silence Truncated: ${result.silence_removed_formatted}\n` +
-    `Kept Dialogue Segments: ${result.segments_kept}\n\n` +
-    `The processed audio is now loaded in the Processed Preview Player below.`
+    `Silence Truncated: ${result.silence_removed_formatted}\n\n` +
+    `The cleaned audio file is now DOWNLOADING to your device (Downloads folder)!\n` +
+    `You can also tap the green "DOWNLOAD AUDIO" button anytime.`
   );
 }
 
